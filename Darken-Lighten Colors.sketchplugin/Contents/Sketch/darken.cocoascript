@@ -1,0 +1,13 @@
+@import 'utility.js'
+
+var darkenByOne = function(context) {
+  changeLightness(context, "darken", .01)
+}
+
+var darkenByFive = function(context) {
+  changeLightness(context, "darken", .05)
+}
+
+var darkenByTen = function(context) {
+  changeLightness(context, "darken", .1)
+}

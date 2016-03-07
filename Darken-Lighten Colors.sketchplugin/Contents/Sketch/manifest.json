@@ -1,0 +1,75 @@
+{
+  "name": "Darken-Lighten Colors",
+  "description": "Darken or lighten colors in steps similar to how Sass does.",
+  "author": "Michael Fouquet",
+  "authorEmail": "michael.fouquet@me.com",
+  "homepage": "https://github.com/mfouquet/darken-ligten-colors",
+  "version" : "1.0",
+  "compatibleVersion": 3,
+  "identifier" : "com.mfouquet.sketch.darken-lighten-colors",
+  "commands" : [
+    {
+      "name" : "by 1%",
+      "identifier" : "darken-1",
+      "script" : "darken.cocoascript",
+      "handler" : "darkenByOne",
+      "shortcut" : "",
+    },
+    {
+      "name" : "by 5%",
+      "identifier" : "darken-5",
+      "script" : "darken.cocoascript",
+      "handler" : "darkenByFive",
+      "shortcut" : "",
+    },
+    {
+      "name" : "by 10%",
+      "identifier" : "darken-10",
+      "script" : "darken.cocoascript",
+      "handler" : "darkenByTen",
+      "shortcut" : "ctrl alt -",
+    },
+    {
+      "name" : "by 1%",
+      "identifier" : "lighten-1",
+      "script" : "lighten.cocoascript",
+      "handler" : "lightenByOne",
+      "shortcut" : "",
+    },
+    {
+      "name" : "by 5%",
+      "identifier" : "lighten-5",
+      "script" : "lighten.cocoascript",
+      "handler" : "lightenByFive",
+      "shortcut" : "",
+    },
+    {
+      "name" : "by 10%",
+      "identifier" : "lighten-10",
+      "script" : "lighten.cocoascript",
+      "handler" : "lightenByTen",
+      "shortcut" : "ctrl alt +",
+    },
+  ],
+  "menu" : {
+    "items" : [
+      {
+        "title": "Darken",
+        "items": [
+          "darken-1",
+          "darken-5",
+          "darken-10",
+        ]
+      },
+      {
+        "title": "Lighten",
+        "items": [
+          "lighten-1",
+          "lighten-5",
+          "lighten-10",
+        ]
+      },
+    ],
+    "title" : "Darken Lighten Colors"
+  },
+}

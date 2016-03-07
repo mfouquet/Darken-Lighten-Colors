@@ -2,70 +2,94 @@ var changeLightness = function(context, type, amount) {
 
   // Variable setup
   var selection = context.selection
-  var layer = selection[0]
-  var selectedColor = layer.style().fills().firstObject().color()
 
-  // http://axonflux.com/handy-rgb-to-hsl-and-rgb-to-hsv-color-model-c
-  var red = selectedColor.red()
-  var green = selectedColor.green()
-  var blue = selectedColor.blue()
+  if (checkLayerCount(selection.count())) {
+    var layer = selection[0]
+    var selectedColor = layer.style().fills().firstObject().color()
 
-  var max = Math.max(red, blue, green)
-  var min = Math.min(red, blue, green)
+    // http://axonflux.com/handy-rgb-to-hsl-and-rgb-to-hsv-color-model-c
+    var red = selectedColor.red()
+    var green = selectedColor.green()
+    var blue = selectedColor.blue()
 
-  // Convert the RGB selection to HSL
-  var hue
-  var saturation
-  var lightness = (max + min) / 2
+    var max = Math.max(red, blue, green)
+    var min = Math.min(red, blue, green)
 
-  if (max === min) {
-    hue = 0
-    saturation = 0
-  } else {
-    var d = max - min
-    saturation = lightness > 0.5  ? d / (2 - max - min) : d / (max + min)
+    // Convert the RGB selection to HSL
+    var hue
+    var saturation
+    var lightness = (max + min) / 2
 
-    if (max === red) {
-      hue = (green - blue) / d + (green < blue ? 6 : 0)
-    } else if (max === green) {
-      hue = (blue - red) / d + 2
-    } else if (max === blue) {
-      hue = (red - green) / d + 4
-    }
-
-    hue /= 6
-
-    if (type === "darken") {
-      lightness = lightness - amount
+    if (max === min) {
+      hue = 0
+      saturation = 0
     } else {
-      lightness = lightness + amount
+      var d = max - min
+      saturation = lightness > 0.5  ? d / (2 - max - min) : d / (max + min)
+
+      if (max === red) {
+        hue = (green - blue) / d + (green < blue ? 6 : 0)
+      } else if (max === green) {
+        hue = (blue - red) / d + 2
+      } else if (max === blue) {
+        hue = (red - green) / d + 4
+      }
+
+      hue /= 6
+
+      if (type === "darken") {
+        lightness = lightness - amount
+      } else {
+        lightness = lightness + amount
+      }
     }
+
+    // Convert it back to RGB to set the color
+    var newRed
+    var newGreen
+    var newBlue
+
+    if (saturation === 0) {
+      newRed = lightness
+      newGreen = lightness
+      newBlue = lightness
+    } else {
+      var q = lightness < 0.5
+        ? lightness * (1 + saturation)
+        : lightness + saturation - lightness * saturation
+
+      var p = 2 * lightness - q;
+
+      newRed = convertHueToRgb (p, q, hue + 1/3)
+      newGreen = convertHueToRgb (p, q, hue)
+      newBlue = convertHueToRgb (p, q, hue - 1/3)
+    }
+
+    selectedColor.setRed(newRed)
+    selectedColor.setGreen(newGreen)
+    selectedColor.setBlue(newBlue)
+  }
+}
+
+var checkLayerCount = function(selectionCount) {
+  var app = NSApplication.sharedApplication()
+  var isOneLayerSelected = false
+
+  switch (selectionCount) {
+    case 0:
+      app.displayDialog_withTitle("You must select a layer first.", "Darken Lighten Colors")
+    break
+
+    case 1:
+      isOneLayerSelected = true
+    break
+
+    default:
+      app.displayDialog_withTitle("Only one layer can be selected.", "Darken Lighten Colors")
+    break
   }
 
-  // Convert it back to RGB to set the color
-  var newRed
-  var newGreen
-  var newBlue
-
-  if (saturation === 0) {
-    newRed = lightness
-    newGreen = lightness
-    newBlue = lightness
-  } else {
-    var q = lightness < 0.5
-      ? lightness * (1 + saturation)
-      : lightness + saturation - lightness * saturation
-
-    var p = 2 * lightness - q;
-
-    newRed = convertHueToRgb (p, q, hue + 1/3)
-    newGreen = convertHueToRgb (p, q, hue)
-    newBlue = convertHueToRgb (p, q, hue - 1/3)
-  }
-
-  selectedColor.setRed(newRed)
-  selectedColor.setGreen(newGreen)
-  selectedColor.setBlue(newBlue)
+  return isOneLayerSelected
 }
 
 var convertHueToRgb = function (p, q, t) {
